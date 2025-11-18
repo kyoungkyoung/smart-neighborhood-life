@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>슬기로운 동네생활 | 리포트 신청</title>
+    <!-- Tailwind CSS 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter 폰트 로드 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Noto Sans KR 폰트를 기본으로 사용 */
+        body {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+        }
+        /* 커스텀 라디오/체크박스 스타일 */
+        .custom-radio:checked {
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
+            background-color: #3b82f6; /* blue-500 */
+            border-color: #3b82f6;
+        }
+        .custom-checkbox:checked {
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+        }
+        /* 약관 텍스트 스크롤 */
+        .terms-box {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        /* --- 모의 리포트 스타일 --- */
+        #report-content {
+            border: 1px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 0.75rem; /* rounded-xl */
+            padding: 1.5rem; /* p-6 */
+            background: #ffffff; /* bg-white */
+        }
+        #report-content h3 { /* 섹션 타이틀 */
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 700; /* font-bold */
+            color: #1f2937; /* text-gray-800 */
+            border-bottom: 2px solid #3b82f6; /* border-blue-500 */
+            padding-bottom: 0.75rem; /* pb-3 */
+            margin-top: 2rem; /* mt-8 */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        #report-content h4 { /* 소제목 */
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 600; /* font-semibold */
+            color: #374151; /* text-gray-700 */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+        #report-content .report-section {
+            margin-bottom: 2.5rem; /* mb-10 */
+        }
+        #report-content .pros-cons {
+            display: grid;
+            grid-template-columns: repeat(1, minmax(0, 1fr)); /* 1단 */
+            gap: 1.5rem; /* gap-6 */
+        }
+        @media (min-width: 640px) { /* sm: 이상 */
+            #report-content .pros-cons {
+                grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2단 */
+            }
+        }
+        #report-content .pros-cons h5 { /* 장점/고려사항 타이틀 */
+            font-weight: 700; /* font-bold */
+            margin-bottom: 0.75rem; /* mb-3 */
+            font-size: 1.125rem; /* text-lg */
+        }
+        #report-content ul {
+            list-style-type: disc;
+            padding-left: 1.25rem; /* pl-5 */
+            color: #4b5563; /* text-gray-600 */
+            line-height: 1.75; /* leading-relaxed */
+        }
+        /* (NEW) 리포트 내 섹션 ul 스타일 */
+        #report-content .info-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        #report-content .info-list li {
+            position: relative;
+            padding-left: 1.75rem; /* 28px */
+            margin-bottom: 0.75rem; /* 12px */
+        }
+        #report-content .info-list li::before {
+            content: '✓'; /* 체크 아이콘 */
+            position: absolute;
+            left: 0;
+            top: 1px;
+            color: #2563eb; /* blue-600 */
+            font-weight: 700;
+            font-size: 1rem; /* 16px */
+        }
+
+        /* 모의 차트 스타일 */
+        .chart-bar-container {
+            background-color: #f3f4f6; /* bg-gray-100 */
+            border-radius: 0.5rem; /* rounded-lg */
+            overflow: hidden;
+            width: 100%;
+        }
+        .chart-bar {
+            height: 1.25rem; /* h-5 */
+            background-color: #9ca3af; /* bg-gray-400 */
+            border-radius: 0 0.5rem 0.5rem 0;
+            transition: width 0.5s ease-out;
+            text-align: right;
+            padding-right: 0.5rem;
+            font-size: 0.75rem; /* text-xs */
+            color: white;
+            font-weight: 600;
+        }
+        /* 카페 추천 그리드 */
+        .cafe-grid {
+            display: grid;
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+            gap: 1rem;
+        }
+        @media (min-width: 640px) { /* sm: 이상 */
+            .cafe-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        .cafe-card {
+            border: 1px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 1rem; /* p-4 */
+            background: #fafafa; /* bg-gray-50 */
+        }
+        .cafe-card h5 {
+            font-weight: 700;
+            font-size: 1.125rem; /* text-lg */
+            color: #111827; /* text-gray-900 */
+        }
+        .cafe-card p {
+            font-size: 0.875rem; /* text-sm */
+            color: #4b5563; /* text-gray-600 */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+        .cafe-card .tags {
+            font-size: 0.75rem; /* text-xs */
+            font-weight: 500; /* font-medium */
+            color: #3b82f6; /* text-blue-600 */
+        }
+        
+        /* --- Modal Style --- */
+        .modal-body {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        .modal-body h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .modal-body h5 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-top: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+        .modal-body p, .modal-body li {
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+        .modal-body ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+        }
+        .modal-body strong {
+            font-weight: 700;
+            color: #1f2937;
+        }
+        .modal-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .modal-table th, .modal-table td {
+            border: 1px solid #d1d5db;
+            padding: 0.5rem 0.75rem;
+            text-align: left;
+        }
+        .modal-table thead {
+            background-color: #f3f4f6;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4 flex-col">
+
+    <!-- 메인 컨텐츠 영역 -->
+    <div class="bg-white p-6 sm:p-10 rounded-2xl shadow-xl w-full max-w-2xl">
+        
+        <!-- 로고 및 헤더 -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">슬기로운 동네생활 🏠</h1>
+            <p class="text-gray-600 mt-2">나에게 꼭 맞는 동네를 찾기 위한 리포트를 생성합니다.</p>
+        </div>
+
+        <!-- 진행 상태 바 -->
+        <div id="progress-bar-container" class="w-full bg-gray-200 rounded-full h-2.5 mb-8">
+            <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%; transition: width 0.3s ease-in-out;"></div>
+        </div>
+
+        <!-- 설문조사 폼 -->
+        <form id="survey-form">
+
+            <!-- Step 0: 개인정보 동의 -->
+            <div id="step-0" class="step">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-6">서비스 이용 동의</h2>
+                
+                <div class="mb-4">
+                    <span class="text-lg font-semibold text-blue-600">※ MVP 서비스 안내</span>
+                    <p class="text-sm text-gray-700 mt-1">
+                        본 '슬기로운 동네생활' 서비스는 현재 <span class="font-bold">광운대학교 인근 5km 내외</span> 지역을 대상으로 하는 MVP(최소 기능 제품)입니다. 
+                        서비스 이용에 참고 부탁드립니다.
+                    </p>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="border border-gray-300 rounded-lg p-4">
+                        <label class="flex items-center cursor-pointer">
+                            <input type="checkbox" id="agree-all" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 font-semibold text-gray-800">전체 동의하기</span>
+                        </label>
+                    </div>
+
+                    <div class="border border-gray-300 rounded-lg p-4 space-y-3">
+                        <div>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="agree" value="terms" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <span class="ml-3 text-gray-700">(필수) 개인정보 수집 및 이용 동의</span>
+                            </label>
+                            <div class="terms-box mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-600 border">
+                                <strong>1. 수집 항목:</strong> 이름(또는 닉네임), 연령층, (선택) 집 주소/회사(학교) 정보, 핸드폰 번호<br>
+                                <strong>2. 수집 목적:</strong> 맞춤형 동네 리포트 생성 및 전송<br>
+                                <strong>3. 보유 기간:</strong> 리포트 생성 및 전송 완료 후 30일간 보관 후 즉시 파기<br>
+                                <strong>4. 동의 거부 권리:</strong> 귀하는 개인정보 수집 및 이용에 동의하지 않을 권리가 있으나, 필수 항목 미동의 시 리포트 생성이 불가능합니다.
+                            </div>
+                        </div>
+                        <div>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="agree" value="marketing" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <span class="ml-3 text-gray-700">(선택) 후속 서비스 및 이벤트 정보 수신 동의</span>
+                            </label>
+                             <div class="terms-box mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-600 border">
+                                <strong>1. 목적:</strong> 신규 서비스 출시, 이벤트, 혜택 등 유용한 정보 제공<br>
+                                <strong>2. 수단:</strong> 문자 메시지(SMS/LMS), 알림톡<br>
+                                <strong>3. 보유 기간:</strong> 동의 철회 시까지<br>
+                                <strong>4. 동의 거부 권리:</strong> 귀하는 마케팅 정보 수신에 동의하지 않을 수 있으며, 미동의 시에도 기본 리포트 서비스 이용은 가능합니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 1: 기본 정보 -->
+            <div id="step-1" class="step hidden">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-6">1. 기본 정보를 알려주세요.</h2>
+                
+                <div class="mb-6">
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">이름 (또는 닉네임)</label>
+                    <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="예: 김카피">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">연령층</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="radio" name="age-group" value="10s" class="custom-radio h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <span class="ml-3 text-gray-700">10대</span>
+                        </label>
+                        <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="radio" name="age-group" value="20s" class="custom-radio h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <span class="ml-3 text-gray-700">20대</span>
+                        </label>
+                        <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="radio" name="age-group" value="30s" class="custom-radio h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <span class="ml-3 text-gray-700">30대</span>
+                        </label>
+                        <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="radio" name="age-group" value="40s" class="custom-radio h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <span class="ml-3 text-gray-700">40대</span>
+                        </label>
+                        <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="radio" name="age-group" value="50s_plus" class="custom-radio h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <span class="ml-3 text-gray-700">50대 이상</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: 주소 정보 -->
+            <div id="step-2" class="step hidden">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-6">2. 주요 활동 장소를 알려주세요.</h2>
+                <p class="text-sm text-gray-500 mb-2">
+                    (안내) MVP 버전에서는 주소 검색 API 대신 텍스트로 입력받습니다.
+                </p>
+                <p class="text-sm text-blue-600 font-medium mb-4">
+                    ※ 주소가 정밀할수록 더 세밀하고 정확한 정보의 리포트가 제공됩니다.
+                </p>
+                
+                <div class="mb-6">
+                    <label for="home-address" class="block text-sm font-medium text-gray-700 mb-2">🏠 내 집 주소 (동)</label>
+                    <input type="text" id="home-address" name="home-address" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="예: 광운대학교 행복기숙사 또는 지번">
+                </div>
+
+                <div>
+                    <label for="work-address" class="block text-sm font-medium text-gray-700 mb-2">💼 회사 / 학교 / 기타 자주 가는 곳 주소</label>
+                    <input type="text" id="work-address" name="work-address" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="예: 서울시 성동구 성수동 또는 경희대학교(상호)">
+                </div>
+            </div>
+
+            <!-- Step 3: 주요 이동수단 -->
+            <div id="step-3" class="step hidden">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-6">3. 주요 이동수단을 알려주세요.</h2>
+                <label class="block text-sm font-medium text-gray-700 mb-2">출퇴근/이동 시 가장 많이 이용하는 수단입니다. (1개 선택)</label>
+                <div class="space-y-3 mt-3">
+                    <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                        <input type="radio" name="transport" value="walk" class="custom-radio h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500">
+                        <span class="ml-3 text-gray-700">🚶‍♀️ 도보</span>
+                    </label>
+                    <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                        <input type="radio" name="transport" value="bicycle" class="custom-radio h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500">
+                        <span class="ml-3 text-gray-700">🚲 자전거</span>
+                    </label>
+                    <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                        <input type="radio" name="transport" value="e-bicycle" class="custom-radio h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500">
+                        <span class="ml-3 text-gray-700">⚡ 전기자전거</span>
+                    </label>
+                    <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                        <input type="radio" name="transport" value="public" class="custom-radio h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500">
+                        <span class="ml-3 text-gray-700">🚌 버스 / 지하철</span>
+                    </label>
+                    <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                        <input type="radio" name="transport" value="car" class="custom-radio h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500">
+                        <span class="ml-3 text-gray-700">🚗 자차</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Step 4: 라이프스타일 -->
+            <div id="step-4" class="step hidden">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-6">4. 당신의 라이프스타일은?</h2>
+                <label class="block text-sm font-medium text-gray-700 mb-2">가장 가까운 항목을 최대 2개 선택해 주세요.</label>
+                <p id="lifestyle-warning" class="text-sm text-red-500 mt-1 hidden">최대 2개까지만 선택할 수 있습니다.</p>
+                <div class="space-y-3 mt-3" id="lifestyle-checkboxes">
+                    <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                        <input type="checkbox" name="lifestyle" value="work-cafe" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <span class="ml-3 text-gray-700">사이드 프로젝트/공부를 위해 <span class="font-semibold text-blue-600">업무용 카페</span>를 자주 가요.</span>
+                    </label>
+                    <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                        <input type="checkbox" name="lifestyle" value="workout" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <span class="ml-3 text-gray-700">퇴근 후 집 근처에서 <span class="font-semibold text-blue-600">운동(헬스, 요가 등)</span>을 꼭 해야 해요.</span>
+                    </label>
+                    <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                        <input type="checkbox" name="lifestyle" value="homebody" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <span class="ml-3 text-gray-700">주말에는 주로 <span class="font-semibold text-blue-600">집에서 휴식</span>하며 재충전해요. (조용한 환경 중요)</span>
+                    </label>
+                    <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                        <input type="checkbox" name="lifestyle" value="social" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <span class="ml-3 text-gray-700"><span class="font-semibold text-blue-600">친구들과의 약속</span>이 잦고, 핫플레이스를 즐겨 찾아요.</span>
+                    </label>
+                    <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                        <input type="checkbox" name="lifestyle" value="self-development" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <span class="ml-3 text-gray-700">자기계발을 위해 <span class="font-semibold text-blue-600">스터디/모임</span>에 참여해요.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Step 5: 취미 및 중요 시설 -->
+            <div id="step-5" class="step hidden">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-6">5. 관심사 및 중요 시설</h2>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">주요 취미 (중복 선택 가능)</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="checkbox" name="hobby" value="foodie" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-gray-700">🍽️ 맛집 탐방 (미식 로드맵)</span>
+                        </label>
+                        <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="checkbox" name="hobby" value="shopping" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-gray-700">🛍️ 쇼핑</span>
+                        </label>
+                        <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="checkbox" name="hobby" value="walk" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-gray-700">🌳 산책 / 공원</span>
+                        </label>
+                        <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="checkbox" name="hobby" value="culture" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-gray-700">🎬 문화생활 (영화, 전시)</span>
+                        </label>
+                        <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="checkbox" name="hobby" value="music" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-gray-700">🎤 노래방/음악감상</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">동네에서 꼭 필요한 시설 (중복 선택 가능)</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="checkbox" name="infra" value="grocery" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-gray-700">🛒 대형마트 / 장보기</span>
+                        </label>
+                        <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="checkbox" name="infra" value="gym" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-gray-700">💪 헬스장</span>
+                        </label>
+                        <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="checkbox" name="infra" value="office" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-gray-700">✉️ 관공서 (주민센터, 우체국)</span>
+                        </label>
+                        <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="checkbox" name="infra" value="security" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-gray-700">🌙 밝은 귀갓길 / 치안</span>
+                        </label>
+                        <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="checkbox" name="infra" value="library" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-gray-700">📚 도서관 / 서점</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 네비게이션 버튼 (폼 내부에 위치) -->
+            <div id="navigation-buttons" class="mt-10 flex justify-between">
+                <button type="button" id="prev-btn" class="bg-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-lg hover:bg-gray-400 transition-colors disabled:opacity-50" disabled>
+                    이전
+                </button>
+                <button type="button" id="next-btn" class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors">
+                    다음
+                </button>
+                <button type="submit" id="submit-btn" class="bg-green-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors hidden">
+                    리포트 생성하기
+                </button>
+            </div>
+        </form>
+
+        <!-- 로딩 스피너 (제출 시) -->
+        <div id="loading" class="hidden text-center py-10">
+            <svg class="animate-spin h-10 w-10 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            <p class="text-gray-600 mt-4">리포트를 생성 중입니다. 잠시만 기다려주세요...</p>
+        </div>
+
+        <!-- 리포트 결과 및 전송 CTA -->
+        <div id="report-output-container" class="hidden">
+            
+            <!-- 모의 리포트가 주입될 곳 -->
+            <div id="report-content" class="mb-8">
+                <!-- generateMockReport() 함수가 이 안에 HTML을 생성합니다. -->
+            </div>
+
+            <!-- 핸드폰 번호 입력 폼 -->
+            <form id="report-send-form" class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-200">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-6">📬 생성된 리포트 전송하기</h2>
+                <p class="text-gray-600 mb-4">
+                    리포트(PDF)를 보관하고 싶으시다면, 핸드폰 번호를 입력해주세요.
+                    입력하신 번호로 리포트 파일이 전송됩니다.
+                </p>
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">핸드폰 번호 ('-' 제외 숫자만 입력)</label>
+                    <input type="tel" id="phone" name="phone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="01012345678" pattern="[0-9]{10,11}">
+                    <p id="phone-warning" class="text-sm text-red-500 mt-1 hidden">올바른 핸드폰 번호 형식이 아닙니다.</p>
+                </div>
+                
+                <!-- (NEW) 다음 리포트 신청 -->
+                <div class="mt-6 p-4 bg-gray-50 rounded-lg border">
+                    <p class="text-sm text-gray-700 leading-relaxed">
+                        오늘 생성된 리포트의 다음 버전은 <span class="font-bold text-blue-600">예산 설정(꼭.맞.춤. 계산기)</span>와 <span class="font-bold text-blue-600">예산 별 지역 선정 추천&비교</span>(비슷한 월별 생활비로 갈 수 있는 다른 동네 추천 받기&비교)입니다.
+                    </p>
+                    <label class="flex items-center cursor-pointer mt-4">
+                        <input type="checkbox" id="next-report-agree" name="next-report-agree" value="true" class="custom-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <span class="ml-3 text-sm font-semibold text-gray-800">다음 서비스가 기대된다면 '다음 리포트 받기'도 신청해주세요.</span>
+                    </label>
+                </div>
+                
+                 <button type="submit" id="send-report-btn" class="mt-6 w-full bg-green-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50">
+                    내 핸드폰으로 전송하기
+                </button>
+            </form>
+            
+            <button type="button" onclick="location.reload()" class="mt-8 w-full bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors">
+                처음으로 돌아가기
+            </button>
+        </div>
+
+    </div><!-- (END) div.max-w-2xl -->
+
+    <!-- (NEW) Footer -->
+    <footer class="w-full max-w-2xl mx-auto text-center py-8 px-4 text-gray-500 text-xs">
+        <div class="mb-4 space-x-2">
+            <button type="button" id="terms-modal-btn" class="hover:text-gray-700 underline">이용약관</button>
+            <span class="text-gray-400">|</span>
+            <button type="button" id="privacy-modal-btn" class="hover:text-gray-700 underline">개인정보 처리방침</button>
+            <span class="text-gray-400">|</span>
+            <a href="http://pf.kakao.com/_mxovDn" target="_blank" rel="noopener noreferrer" class="hover:text-gray-700 underline">문의하기 (카카오톡)</a>
+        </div>
+        <p class="leading-relaxed">
+            상호: 원테이트 (WANTATE) | 대표자: 한명수 <br>
+            사업자등록번호: 684-32-01695 | 고객센터 이메일: privacy.wantate@gmail.com <br>
+            주소: 서울특별시 동대문구 경희대로 26, 2층 213호 (회기동, 삼의원창업센터)
+        </p>
+    </footer>
+
+    <!-- (NEW) Modals -->
+    <!-- Terms Modal -->
+    <div id="terms-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl flex flex-col">
+            <div class="flex justify-between items-center p-5 border-b">
+                <h3 class="text-xl font-semibold">보증금지키미 이용약관</h3>
+                <button type="button" class="close-modal-btn text-gray-400 hover:text-gray-700 text-3xl font-light">&times;</button>
+            </div>
+            <div class="p-6 modal-body">
+                <h4>제1장 총칙</h4>
+                <h5>제1조 (목적)</h5>
+                <p>이 약관은 원테이트(WANTATE) (이하 '회사'라 함)가 제공하는 보증금지키미 (이하 '서비스'라 함)의 이용과 관련하여 '회사'와 '이용자'의 권리, 의무 및 책임사항, 기타 필요한 사항을 규정함을 목적으로 합니다.</p>
+                <h5>제2조 (용어의 정의)</h5>
+                <p>이 약관에서 사용하는 용어의 정의는 다음과 같습니다.</p>
+                <ul>
+                    <li>'서비스'라 함은 '이용자'가 입력한 정보를 바탕으로 주거 지역 정보, 교통 및 비용 정보, 라이프스타일 분석 등을 비교, 추천하는 보증금지키미 및 관련 제반 서비스를 의미합니다.</li>
+                    <li>'이용자'라 함은 '회사'의 '서비스'에 접속하여 이 약관에 동의하고 '회사'가 제공하는 '서비스'를 이용하는 자를 말합니다.</li>
+                </ul>
+                <h5>제3조 (약관의 명시와 개정)</h5>
+                <p>'회사'는 이 약관의 내용을 '이용자'가 쉽게 알 수 있도록 '서비스' 초기 화면 또는 연결화면에 게시합니다.</p>
+                <p>'회사'는 '약관의 규제에 관한 법률', '정보통신망 이용촉진 및 정보보호 등에 관한 법률(이하 '정보통신망법')' 등 관련 법령을 위배하지 않는 범위에서 이 약관을 개정할 수 있습니다.</p>
+                <p>'회사'가 약관을 개정할 경우에는 적용일자 및 개정사유를 명시하여 현행약관과 함께 제1항의 방식에 따라 그 개정약관의 적용일자 7일 전부터 적용일자 전일까지 공지합니다.</p>
+                
+                <h4>제2장 서비스 이용</h4>
+                <h5>제4조 (서비스의 제공 및 변경)</h5>
+                <p>'회사'는 '이용자'에게 아래와 같은 '서비스'를 제공합니다.</p>
+                <ul>
+                    <li>가. '이용자'가 입력한 예산, 주요 생활권(회사, 학교 등), 라이프스타일 정보를 기반으로 한 주거 지역 비교 및 추천 정보 제공</li>
+                    <li>나. 특정 지역(예: 광운대학교 인근)의 동네 정보 제공</li>
+                    <li>다. 외부 API(지도 서비스, 공공데이터 등)를 통해 수집된 교통, 치안, 편의시설 등의 정보 제공</li>
+                    <li>라. 상기 정보를 종합한 AI 기반 추천 리포트 제공</li>
+                    <li>마. 기타 '회사'가 추가 개발하거나 다른 회사와의 제휴계약 등을 통해 '이용자'에게 제공하는 일체의 서비스</li>
+                </ul>
+                <p>'회사'는 '서비스'의 내용, 운영상 또는 기술상의 필요에 따라 제공하고 있는 '서비스'의 전부 또는 일부를 변경할 수 있습니다.</p>
+                <h5>제5조 (서비스의 중단)</h5>
+                <p>'회사'는 컴퓨터 등 정보통신설비의 보수점검, 교체 및 고장, 통신두절 또는 운영상 상당한 이유가 있는 경우 '서비스'의 제공을 일시적으로 중단할 수 있습니다.</p>
+                <p>'회사'는 제1항의 사유로 '서비스'의 제공이 일시적으로 중단됨으로 인하여 '이용자' 또는 제3자가 입은 손해에 대하여 고의 또는 중대한 과실이 없는 한 배상하지 아니합니다.</p>
+                <h5>제6조 (이용계약의 성립)</h5>
+                <p>이용계약은 '이용자'가 '회사'가 제공하는 '서비스'의 '이용약관'에 "동의합니다" 버튼을 클릭하거나, '서비스'를 실제로 이용하기 시작할 때 이 약관에 동의한 것으로 간주하여 성립합니다.</p>
+                <p>'회사'는 다음 각 호에 해당하는 신청에 대하여는 승낙을 유보하거나 거절할 수 있습니다.</p>
+                <ul>
+                    <li>가. 비정상적인 방법으로 '서비스'에 접근하는 경우</li>
+                    <li>나. 기타 '이용자'로 등록하는 것이 '회사'의 기술상 현저히 지장이 있다고 판단되는 경우</li>
+                </ul>
+                <h5>제7조 (서비스 이용 제한 및 계약 해지)</h5>
+                <p>'이용자'는 언제든지 '서비스' 이용을 중단할 수 있습니다.</p>
+                <p>'이용자'가 다음 각 호의 사유에 해당하는 경우, '회사'는 '서비스' 이용을 제한 및 정지시킬 수 있습니다.</p>
+                <ul>
+                    <li>가. 타인의 명의를 도용하거나 허위 내용을 등록한 경우</li>
+                    <li>나. '서비스'를 이용하여 법령 또는 이 약관이 금지하거나 공서양속에 반하는 행위를 하는 경우</li>
+                    <li>다. '서비스'의 운영을 고의로 방해하는 경우</li>
+                </ul>
+
+                <h4>제3장 회사와 이용자의 의무</h4>
+                <h5>제8조 (회사의 의무)</h5>
+                <p>'회사'는 법령과 이 약관이 금지하거나 공서양속에 반하는 행위를 하지 않으며, 이 약관이 정하는 바에 따라 지속적이고 안정적으로 '서비스'를 제공하는 데 최선을 다하여야 합니다.</p>
+                <p>'회사'는 '이용자'가 안전하게 '서비스'를 이용할 수 있도록 개인정보(신용정보 포함)보호를 위한 보안 시스템을 갖추어야 하며, '개인정보처리방침'을 공시하고 준수합니다.</p>
+                <h5>제9조 (이용자의 의무)</h5>
+                <p>'이용자'는 다음 행위를 하여서는 안 됩니다.</p>
+                <ul>
+                    <li>가. 신청 또는 변경 시 허위 내용의 등록</li>
+                    <li>나. 타인의 정보 도용</li>
+                    <li>다. '회사'가 게시한 정보의 변경</li>
+                    <li>라. '회사'의 서버를 해킹하거나 '서비스'를 비정상적인 방법으로 이용하는 행위</li>
+                    <li>마. '회사' 및 기타 제3자의 저작권 등 지적재산권을 침해하는 행위</li>
+                </ul>
+                <h5>제10조 (개인정보보호)</h5>
+                <p>'회사'는 '정보통신망법' 등 관련 법령이 정하는 바에 따라 '이용자'의 개인정보를 보호하기 위해 노력합니다. 개인정보의 보호 및 사용에 대해서는 관련 법령 및 '회사'의 '개인정보처리방침'이 적용됩니다.</p>
+
+                <h4>제4장 기타</h4>
+                <h5>제11조 (정보의 제공 및 광고의 게재)</h5>
+                <p>'회사'는 '이용자'가 '서비스' 이용 중 필요하다고 인정되는 다양한 정보를 공지사항이나 전자우편 등의 방법으로 '이용자'에게 제공할 수 있습니다.</p>
+                <p>'회사'는 '서비스'의 운영과 관련하여 '서비스' 화면, 홈페이지, 전자우편 등에 광고를 게재할 수 있습니다.</p>
+                <h5>제12조 (저작권의 귀속 및 이용제한)</h5>
+                <p>'회사'가 작성한 저작물에 대한 저작권 및 기타 지적재산권은 '회사'에 귀속합니다.</p>
+                <p>'이용자'는 '서비스'를 이용함으로써 얻은 정보 중 '회사'에게 지적재산권이 귀속된 정보를 '회사'의 사전 승낙 없이 복제, 송신, 출판, 배포, 방송 기타 방법에 의하여 영리목적으로 이용하거나 제3자에게 이용하게 하여서는 안 됩니다.</p>
+                <h5>제13조 (면책조항)</h5>
+                <p>'회사'는 천재지변 또는 이에 준하는 불가항력으로 인하여 '서비스'를 제공할 수 없는 경우에는 '서비스' 제공에 관한 책임이 면제됩니다.</p>
+                <p>'회사'가 '이용자'에게 제공하는 모든 정보(주거 지역 추천, 교통비, 예상 시간, 치안, 라이프스타일 분석 등)는 '이용자'의 합리적인 의사결정을 돕기 위한 참고 자료입니다. '회사'는 이 정보의 절대적인 정확성이나 완전성을 보증하지 않습니다.</p>
+                <p>'서비스'는 외부 API(지도 서비스, 공공 데이터, AI 모델 등)로부터 정보를 수신하여 가공 및 제공할 수 있습니다. '회사'는 이러한 외부 정보 제공자의 사정이나 정보의 오류로 인해 발생한 '이용자'의 손해에 대해서는 원칙적으로 책임을 지지 않습니다.</p>
+                <p>'서비스'를 통해 제공된 추천 및 정보를 활용한 '이용자'의 최종적인 의사결정(예: 이사, 부동산 계약 등)에 대한 모든 책임은 '이용자' 본인에게 있습니다.</p>
+                <p>'이용자'가 '서비스'를 이용하며 기대하는 수익을 얻지 못하거나 '서비스'의 이용으로 발생하는 손해에 대해서 '회사'는 고의 또는 중대한 과실이 없는 한 책임을 지지 않습니다.</p>
+                <h5>제14조 (준거법 및 재판관할)</h5>
+                <p>'회사'와 '이용자' 간에 제기된 소송은 대한민국법을 준거법으로 합니다.</p>
+                <p>'회사'와 '이용자' 간에 발생한 분쟁에 관한 소송은 민사소송법상의 관할법원에 제소함을 원칙으로 합니다.</p>
+                
+                <h5>부칙</h5>
+                <p>이 약관은 2025년 11월 5일부터 시행합니다.</p>
+            </div>
+            <div class="p-4 border-t bg-gray-50 text-right">
+                <button type="button" class="close-modal-btn bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-gray-600 transition-colors">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Modal -->
+    <div id="privacy-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl flex flex-col">
+            <div class="flex justify-between items-center p-5 border-b">
+                <h3 class="text-xl font-semibold">원테이트(WANTATE) 개인정보 처리방침</h3>
+                <button type="button" class="close-modal-btn text-gray-400 hover:text-gray-700 text-3xl font-light">&times;</button>
+            </div>
+            <div class="p-6 modal-body">
+                <p>원테이트(WANTATE)(이하 '회사'라 함)는 「개인정보보호법」 제30조에 따라 정보주체의 개인정보를 보호하고 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 하기 위하여 다음과 같이 개인정보 처리방침을 수립·공개합니다.</p>
+                
+                <h5>제1조 (개인정보의 수집 항목 및 이용 목적)</h5>
+                <p>① 회사는 다음의 목적을 위하여 개인정보를 수집 및 이용합니다. 수집한 개인정보는 다음의 목적 이외의 용도로는 사용되지 않으며 이용 목적이 변경될 시에는 「개인정보보호법」 제18조에 따라 별도의 동의를 받는 등 필요한 조치를 이행할 예정입니다.</p>
+                <ul class="list-none space-y-2">
+                    <li>
+                        <strong>MVP 서비스 제공:</strong> 서비스 신청 접수, 신청자 식별, 라이프스타일 분석 및 관련 서비스 제공
+                        <ul class="ml-4">
+                            <li><strong>필수 항목:</strong> 이름(또는 닉네임), 주소(집/회사/학교 등)</li>
+                            <li><strong>선택 항목:</strong> 개인 라이프스타일 성향, 휴대폰 번호</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>마케팅 및 광고에의 활용 (선택적 동의자에 한함)</strong>
+                        <ul class="ml-4">
+                            <li><strong>목적:</strong> 신규 서비스 안내, 이벤트 정보 제공</li>
+                            <li><strong>항목:</strong> 이름(또는 닉네임), 휴대폰 번호</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>서비스 이용 과정 자동 수집</strong>
+                        <ul class="ml-4">
+                            <li><strong>목적:</strong> 서비스 안정성 확보, 부정한 이용 방지, 통계 분석</li>
+                            <li><strong>항목:</strong> 서비스 이용 기록, 접속 로그, 접속 IP 정보</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h5>제2조 (개인정보의 처리 및 보유 기간)</h5>
+                <p>① 회사는 법령에 따른 개인정보 보유·이용기간 또는 정보주체로부터 개인정보를 수집 시에 동의받은 개인정보 보유·이용기간 내에서 개인정보를 처리·보유합니다.</p>
+                <p>② 각각의 개인정보 처리 및 보유 기간은 다음과 같습니다.</p>
+                <ul>
+                    <li><strong>MVP 서비스 제공 관련 정보:</strong> 수집일로부터 60일</li>
+                    <li><strong>마케팅 및 광고 활용 정보:</strong> 동의 철회 시 또는 수집일로부터 60일</li>
+                </ul>
+                <p>③ 단, 다음의 정보에 대해서는 아래의 법령상 이유로 명시한 기간 동안 보존합니다.</p>
+                <ul>
+                    <li><strong>보존 근거:</strong> 통신비밀보호법</li>
+                    <li><strong>보존 항목:</strong> 웹사이트 방문 기록 (접속 로그, 접속 IP 정보)</li>
+                    <li><strong>보존 기간:</strong> 3개월</li>
+                </ul>
+
+                <h5>제3조 (개인정보의 제3자 제공)</h5>
+                <p>회사는 정보주체의 개인정보를 제1조(개인정보의 수집 항목 및 이용 목적)에서 명시한 범위 내에서만 처리하며, 다음의 경우를 제외하고는 정보주체의 사전 동의 없이는 본래의 범위를 초과하여 처리하거나 제3자에게 제공하지 않습니다.</p>
+<ul>
+                    <li>정보주체로부터 별도의 동의를 받은 경우</li>
+                    <li>다른 법률에 특별한 규정이 있는 경우</li>
+                    <li>수사 목적으로 법령에 정해진 절차와 방법에 따라 수사기관의 요구가 있는 경우</li>
+                </ul>
+
+                <h5>제4조 (개인정보 처리의 위탁 및 국외 이전)</h5>
+                <p>① 회사는 원활한 개인정보 업무 처리를 위하여 다음과 같이 개인정보 처리업무를 국외 업체에 위탁하고 있습니다.</p>
+                <div class="overflow-x-auto">
+                    <table class="modal-table">
+                        <thead>
+                            <tr>
+                                <th>위탁받는 자 (수탁업체)</th>
+                                <th>이전되는 국가</th>
+                                <th>이전 일시/방법</th>
+                                <th>이전되는 개인정보 항목</th>
+                                <th>위탁업무 내용</th>
+                                <th>보유/이용 기간</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Netlify, Inc.</td>
+                                <td>미국 (U.S.)</td>
+                                <td>서비스 이용 시 네트워크를 통해 전송</td>
+                                <td>제1조의 모든 수집 정보</td>
+                                <td>웹사이트 호스팅 및 운영</td>
+                                <td>서비스 종료 또는 위탁계약 종료 시까지</td>
+                            </tr>
+                            <tr>
+                                <td>Google LLC</td>
+                                <td>미국 (U.S.)</td>
+                                <td>데이터 수집 시 네트워크를 통해 전송</td>
+                                <td>제1조의 모든 수집 정보</td>
+                                <td>데이터 저장(Google Sheets) 및 처리(Gemini AI)</td>
+                                <td>서비스 종료 또는 위탁계약 종료 시까지</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>② 회사는 위탁계약 체결 시 「개인정보보호법」 제26조에 따라 위탁업무 수행목적 외 개인정보 처리 금지, 기술적·관리적 보호조치, 재위탁 제한, 수탁자에 대한 관리·감독, 손해배상 등 책임에 관한 사항을 계약서 등 문서에 명시하고, 수탁자가 개인정보를 안전하게 처리하는지를 감독하고 있습니다.</p>
+
+                <h5>제5조 (정보주체와 법정대리인의 권리·의무 및 행사방법)</h5>
+                <p>① 정보주체는 회사에 대해 언제든지 개인정보 열람·정정·삭제·처리정지 요구 등의 권리를 행사할 수 있습니다.</p>
+                <p>② 제1항에 따른 권리 행사는 회사에 대해 「개인정보보호법 시행령」 제41조제1항에 따라 서면, 전자우편, 모사전송(FAX) 등을 통하여 하실 수 있으며, 회사는 이에 대해 지체 없이 조치하겠습니다. (※ 회원가입이 없는 서비스이므로, 제8조의 연락처로 요청 시 본인 확인 후 처리합니다.)</p>
+                <p>③ 제1항에 따른 권리 행사는 정보주체의 법정대리인이나 위임을 받은 자 등 대리인을 통하여 하실 수 있습니다. 이 경우 「개인정보 처리 방법에 관한 고시」 별지 제11호 서식에 따른 위임장을 제출하셔야 합니다.</p>
+                <p>④ 개인정보 열람 및 처리정지 요구는 「개인정보보호법」 제35조 제4항, 제37조 제2항에 의하여 정보주체의 권리가 제한될 수 있습니다.</p>
+                <p>⑤ 개인정보의 정정 및 삭제 요구는 다른 법령에서 그 개인정보가 수집 대상으로 명시되어 있는 경우에는 그 삭제를 요구할 수 없습니다.</p>
+                <p>⑥ 회사는 정보주체 권리에 따른 열람의 요구, 정정·삭제의 요구, 처리정지의 요구 시 열람 등 요구를 한 자가 본인이거나 정당한 대리인인지를 확인합니다.</p>
+
+                <h5>제6조 (처리하는 개인정보의 파기)</h5>
+                <p>① 회사는 개인정보 보유기간의 경과, 처리목적 달성 등 개인정보가 불필요하게 되었을 때에는 지체 없이 해당 개인정보를 파기합니다.</p>
+                <p>② 정보주체로부터 동의받은 개인정보 보유기간이 경과하거나 처리목적이 달성되었음에도 불구하고 다른 법령에 따라 개인정보를 계속 보존하여야 하는 경우에는, 해당 개인정보를 별도의 데이터베이스(DB)로 옮기거나 보관장소를 달리하여 보존합니다.</p>
+                <p>③ 개인정보 파기의 절차 및 방법은 다음과 같습니다.</p>
+                <ul>
+                    <li><strong>파기절차:</strong> 회사는 파기 사유가 발생한 개인정보를 선정하고, 회사의 개인정보 보호책임자의 승인을 받아 개인정보를 파기합니다.</li>
+                    <li><strong>파기방법:</strong> 회사는 전자적 파일 형태로 기록·저장된 개인정보는 기록을 재생할 수 없도록 기술적 방법을 이용하여 파기하며, 종이 문서에 기록·저장된 개인정보는 분쇄기로 분쇄하거나 소각하여 파기합니다.</li>
+                </ul>
+
+                <h5>제7조 (개인정보의 안전성 확보조치)</h5>
+                <p>회사는 개인정보의 안전성 확보를 위해 다음과 같은 조치를 취하고 있습니다. (※ 본 MVP 서비스는 Google Sheets 및 Netlify의 표준 보안 규정을 준용합니다.)</p>
+                <ul>
+                    <li><strong>관리적 조치:</strong> 내부관리계획 수립·시행, 개인정보 취급 담당자의 최소화 및 교육</li>
+                    <li><strong>기술적 조치:</strong> 개인정보처리시스템 등의 접근권한 관리, 접속기록의 보관 및 위·변조 방지, 개인정보의 암호화, 보안프로그램 설치</li>
+                </ul>
+
+                <h5>제8조 (개인정보 보호책임자)</h5>
+                <p>① 회사는 개인정보 처리에 관한 업무를 총괄해서 책임지고, 개인정보 처리와 관련한 정보주체의 불만 처리 및 피해구제 등을 위하여 아래와 같이 개인정보 보호책임자를 지정하고 있습니다.</p>
+                <ul>
+                    <li><strong>성명:</strong> 한명수</li>
+                    <li><strong>직책:</strong> 대표</li>
+                    <li><strong>연락처 (전화):</strong> 0502-6802-3306</li>
+                    <li><strong>연락처 (이메일):</strong> privacy.wantate@gmail.com</li>
+                    <li><strong>(문의 채널) 카카오톡 채널:</strong> <a href="http://pf.kakao.com/_mxovDn" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline">http://pf.kakao.com/_mxovDn</a></li>
+                </ul>
+                <p>② 정보주체는 회사의 서비스(또는 사업)을 이용하시면서 발생한 모든 개인정보 보호 관련 문의, 불만 처리, 피해구제 등에 관한 사항을 개인정보 보호책임자 및 담당부서로 문의하실 수 있습니다. 회사는 정보주체의 문의에 대해 지체 없이 답변 및 처리해드릴 것입니다.</p>
+
+                <h5>제9조 (개인정보 처리방침 변경)</h5>
+                <p>① 이 개인정보 처리방침은 2025년 11월 5일부터 적용됩니다.</p>
+            </div>
+            <div class="p-4 border-t bg-gray-50 text-right">
+                <button type="button" class="close-modal-btn bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-gray-600 transition-colors">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 전역 변수 ---
+            let currentStep = 0;
+            let surveyData = {}; // 폼 데이터를 저장할 객체
+            let reportHTML = ''; // (NEW) 리포트 HTML을 저장할 전역 변수
+
+            // --- DOM 요소 ---
+            const surveyForm = document.getElementById('survey-form');
+            const steps = surveyForm.querySelectorAll('.step'); // 설문 폼 내의 스텝만 선택
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const submitBtn = document.getElementById('submit-btn');
+            const progressBar = document.getElementById('progress-bar');
+            const progressBarContainer = document.getElementById('progress-bar-container');
+            const navigationButtons = document.getElementById('navigation-buttons');
+            const loadingDiv = document.getElementById('loading');
+            
+            const reportOutputContainer = document.getElementById('report-output-container');
+            const reportContentDiv = document.getElementById('report-content');
+            const reportSendForm = document.getElementById('report-send-form');
+
+            const totalSteps = steps.length; // 6 (0 ~ 5)
+
+            // --- 라이프스타일 2개 제한 로직 ---
+            const lifestyleCheckboxesContainer = document.getElementById('lifestyle-checkboxes');
+            const lifestyleCheckboxes = lifestyleCheckboxesContainer.querySelectorAll('input[type="checkbox"]');
+            const lifestyleWarning = document.getElementById('lifestyle-warning');
+            const maxLifestyleChecks = 2;
+
+            lifestyleCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    const checkedCount = lifestyleCheckboxesContainer.querySelectorAll('input[type="checkbox"]:checked').length;
+                    if (checkedCount >= maxLifestyleChecks) {
+                        lifestyleWarning.classList.remove('hidden'); 
+                        lifestyleCheckboxes.forEach(cb => {
+                            if (!cb.checked) {
+                                cb.disabled = true;
+                                cb.parentElement.classList.add('opacity-50', 'cursor-not-allowed');
+                            }
+                        });
+                    } else {
+                        lifestyleWarning.classList.add('hidden'); 
+                        lifestyleCheckboxes.forEach(cb => {
+                            cb.disabled = false;
+                            cb.parentElement.classList.remove('opacity-50', 'cursor-not-allowed');
+                        });
+                    }
+                });
+            });
+
+            // --- 개인정보 동의 (Step 0) 로직 ---
+            const agreeAll = document.getElementById('agree-all');
+            const agreeCheckboxes = document.querySelectorAll('input[name="agree"]');
+            agreeAll.addEventListener('change', (e) => {
+                agreeCheckboxes.forEach(cb => cb.checked = e.target.checked);
+            });
+            agreeCheckboxes.forEach(cb => {
+                cb.addEventListener('change', () => {
+                    agreeAll.checked = Array.from(agreeCheckboxes).every(c => c.checked);
+                });
+            });
+
+            // --- XSS 방지 로직 ---
+            function sanitizeInput(inputElement) {
+                if (inputElement.value) {
+                    inputElement.value = inputElement.value.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                }
+            }
+            const textInputs = document.querySelectorAll('input[type="text"], input[type="tel"]');
+            textInputs.forEach(input => {
+                input.addEventListener('input', () => sanitizeInput(input));
+                input.addEventListener('change', () => sanitizeInput(input));
+            });
+
+            // --- 핸드폰 번호 유효성 검사 (실시간) ---
+            const phoneInput = document.getElementById('phone');
+            const phoneWarning = document.getElementById('phone-warning');
+            const sendReportBtn = document.getElementById('send-report-btn');
+            
+            phoneInput.addEventListener('input', () => {
+                phoneInput.value = phoneInput.value.replace(/[^0-9]/g, '');
+                const phoneRegex = /^[0-9]{10,11}$/;
+                if (phoneRegex.test(phoneInput.value)) {
+                    phoneWarning.classList.add('hidden');
+                    sendReportBtn.disabled = false; // 버튼 활성화
+                } else {
+                    if(phoneInput.value.length > 0) {
+                        phoneWarning.classList.remove('hidden');
+                    } else {
+                        phoneWarning.classList.add('hidden');
+                    }
+                    sendReportBtn.disabled = true; // 버튼 비활성화
+                }
+            });
+
+
+            // --- 네비게이션 로직 ---
+
+            function updateProgressBar() {
+                // currentStep 0 (동의) ~ 5 (관심사)
+                const progress = (currentStep / (totalSteps - 1)) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+
+            function showStep(stepIndex) {
+                steps.forEach((step, index) => {
+                    step.classList.toggle('hidden', index !== stepIndex);
+                });
+                updateProgressBar();
+
+                prevBtn.disabled = stepIndex === 0;
+                
+                if (stepIndex === totalSteps - 1) { // 마지막 스텝 (Step 5)
+                    nextBtn.classList.add('hidden');
+                    submitBtn.classList.remove('hidden');
+                } else {
+                    nextBtn.classList.remove('hidden');
+                    submitBtn.classList.add('hidden');
+                }
+            }
+            
+            function validateStep(stepIndex) {
+                const step = steps[stepIndex];
+                if (stepIndex === 0) { // Step 0: 개인정보 동의
+                    const requiredAgree = step.querySelector('input[name="agree"][value="terms"]');
+                    if (!requiredAgree.checked) {
+                        // (수정) alert() 대신 console 경고. Netlify/iframe 환경에서 alert이 차단될 수 있음.
+                        console.warn('Terms agreement required.');
+                        // 시각적 피드백 (예: 흔들기)을 추가하면 좋지만, 일단 alert 제거
+                        return false;
+                    }
+                }
+                if (stepIndex === 1) { // Step 1: 기본 정보
+                    const name = step.querySelector('input[name="name"]').value;
+                    const ageGroup = step.querySelector('input[name="age-group"]:checked');
+                    if (name.trim() === '' || ageGroup === null) {
+                         console.warn('Name and age required.');
+                         return false;
+                    }
+                }
+                if (stepIndex === 2) { // Step 2: 주소 정보
+                    const homeAddress = step.querySelector('input[name="home-address"]').value;
+                    const workAddress = step.querySelector('input[name="work-address"]').value;
+                     if (homeAddress.trim() === '' || workAddress.trim() === '') {
+                         console.warn('Addresses required.');
+                         return false;
+                    }
+                }
+                if (stepIndex === 3) { // Step 3: 주요 이동수단
+                    if (step.querySelector('input[name="transport"]:checked') === null) {
+                        console.warn('Transport required.');
+                        return false;
+                    }
+                }
+                if (stepIndex === 4) { // Step 4: 라이프스타일
+                    if (step.querySelectorAll('input[name="lifestyle"]:checked').length === 0) {
+                        console.warn('Lifestyle required.');
+                        return false;
+                    }
+                }
+                // Step 5 (관심사)는 선택 사항
+                return true; 
+            }
+
+            // 다음 버튼
+            nextBtn.addEventListener('click', () => {
+                if (!validateStep(currentStep)) return;
+                if (currentStep < totalSteps - 1) {
+                    currentStep++;
+                    showStep(currentStep);
+                }
+            });
+
+            // 이전 버튼
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 0) {
+                    currentStep--;
+                    showStep(currentStep);
+                }
+            });
+
+            // --- 폼 제출 (리포트 생성) ---
+            surveyForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (!validateStep(currentStep)) return;
+                
+                // 폼 데이터 수집
+                const formData = new FormData(surveyForm);
+                surveyData = Object.fromEntries(formData.entries());
+                surveyData.lifestyle = formData.getAll('lifestyle');
+                surveyData.hobby = formData.getAll('hobby');
+                surveyData.infra = formData.getAll('infra');
+                
+                console.log("최종 설문 데이터:", surveyData);
+
+                // UI 전환: 로딩
+                surveyForm.classList.add('hidden');
+                progressBarContainer.classList.add('hidden');
+                loadingDiv.classList.remove('hidden');
+                
+                // (시뮬레이션) 2초 후 리포트 생성
+                // (중요) API 연동 금지 요청에 따라 setTimeout (모의 생성) 유지
+                setTimeout(() => {
+                    loadingDiv.classList.add('hidden');
+                    
+                    // 모의 리포트 생성 및 주입
+                    // (MODIFIED) const를 제거하고 전역 변수 reportHTML에 저장합니다.
+                    reportHTML = generateMockReport(surveyData); 
+                    reportContentDiv.innerHTML = reportHTML;
+                    
+                    // 리포트 및 CTA 표시
+                    reportOutputContainer.classList.remove('hidden');
+                    
+                    // CTA 폼(핸드폰 전송)에 이벤트 리스너 부착
+                    reportSendForm.addEventListener('submit', handleReportSend);
+
+                }, 2000);
+            });
+
+            // --- 리포트 전송 (CTA) 로직 ---
+            async function handleReportSend(e) {
+                e.preventDefault();
+                
+                const phone = phoneInput.value;
+                const nextReportCheckbox = document.getElementById('next-report-agree');
+                // 유효성 검사는 이미 input 이벤트에서 처리되어 버튼이 활성화됨.
+                // 전송 버튼 비활성화
+                sendReportBtn.disabled = true;
+                sendReportBtn.textContent = '전송 중...';
+
+                // (MODIFIED) Google Apps Script로 보낼 최종 데이터
+                const finalData = {
+                    ...surveyData,
+                    phone: phone,
+                    timestamp: new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" }),
+                    nextReportAgree: nextReportCheckbox.checked, // '다음 리포트 신청' 체크박스 값
+                    
+                    // (NEW) PDF 생성을 위해 리포트 HTML과 CSS 스타일을 함께 전송
+                    reportHTML: reportHTML, // 설문 제출 시 생성된 HTML
+                    reportCSS: document.querySelector('style').innerHTML // <style> 태그 안의 모든 CSS
+                };
+
+                console.log("Google Sheets로 전송할 데이터:", finalData);
+                
+                // --- (MODIFIED) Google Apps Script 연동 지점 ---
+                // 1. 여기에 Google Apps Script '웹 앱 URL'을 붙여넣으세요.
+                const GAS_WEB_APP_URL = 'chimerical-duckanoo-054ab4.netlify.app'; 
+                
+                try {
+                    const response = await fetch(GAS_WEB_APP_URL, {
+                        method: 'POST',
+                        mode: 'no-cors', // 'no-cors' 모드는 응답을 읽을 수 없지만, 데이터 전송(fire-and-forget)은 작동합니다.
+                        cache: 'no-cache',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(finalData)
+                    });
+                    console.log('Data sent successfully (assumed due to no-cors)');
+                } catch (error) {
+                    console.error('Error sending data to Google Sheets:', error);
+                }
+                // --- 연동 지점 끝 ---
+
+
+                // (시뮬레이션) 1.5초 후 전송 완료
+                setTimeout(() => {
+                    reportSendForm.innerHTML = `
+                        <div class="text-center py-10">
+                            <svg class="mx-auto h-16 w-16 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <h2 class="text-2xl font-semibold text-gray-700 mt-6 mb-2">🎉 전송 완료!</h2>
+                            <p class="text-gray-600 mt-4">입력하신 핸드폰 번호로 리포트(PDF)가 전송되었습니다.<br>잠시 후 문자를 확인해주세요.</p>
+                        </div>
+                    `;
+                }, 1500);
+            }
+
+            // --- (MODIFIED) 모의 리포트 생성 함수 ---
+            function generateMockReport(data) {
+                
+                // --- 1. (NEW) 동적 점수 및 출퇴근 시뮬레이션 로직 ---
+                let score = 85; // 기본 점수
+                let commuteTime = 20;
+                let commuteCost = 50000;
+                let commuteRoute = "1호선 광운대역 &rarr; 회사 근처 역 하차";
+                let transportMode = "대중교통";
+
+                switch (data.transport) {
+                    case 'walk':
+                        commuteTime = 70; // 60분 초과 (점수 하락)
+                        commuteCost = 0;
+                        commuteRoute = "도보로 출퇴근 (너무 멈)";
+                        transportMode = "도보";
+                        break;
+                    case 'bicycle':
+                        commuteTime = 45; // 30분 초과 (점수 약간 하락)
+                        commuteCost = 0;
+                        commuteRoute = "자전거로 출퇴근 (경사도 주의)";
+                        transportMode = "자전거";
+                        break;
+                    case 'e-bicycle':
+                        commuteTime = 20;
+                        commuteCost = 0;
+                        commuteRoute = "전기자전거로 출퇴근 (경사도 무관)";
+                        transportMode = "전기자전거";
+                        break;
+                    case 'car':
+                        commuteTime = 40; // 30분 초과 (점수 약간 하락)
+                        commuteCost = 200000; // (유류비/주차비)
+                        commuteRoute = "자차로 출퇴근 (출퇴근길 정체)";
+                        transportMode = "자차";
+                        break;
+                    case 'public':
+                    default:
+                        commuteTime = 25;
+                        commuteCost = 55000;
+                        commuteRoute = `1호선 광운대역 &rarr; ${data['work-address']} 근처 역`;
+                        transportMode = "대중교통";
+                        break;
+                }
+
+                // 출퇴근 시간에 따른 점수 조정
+                if (commuteTime > 60) {
+                    score -= 50; // 60분 초과
+                } else if (commuteTime > 40) {
+                    score -= 25; // 40분 초과
+                } else if (commuteTime <= 20) {
+                    score += 10; // 20분 이내
+                }
+
+                // 기타 라이프스타일 점수 반영
+                if (data.infra.includes('security')) score += 5;
+                if (data.infra.includes('gym') && data.lifestyle.includes('workout')) score += 5;
+                if (data.lifestyle.includes('work-cafe')) score += 3;
+                if (data.hobby.includes('foodie')) score += 2;
+                
+                // 점수 캡 (10 ~ 98)
+                if (score > 98) score = 98;
+                if (score < 10) score = 10;
+                score = Math.round(score); // 정수로 변환
+
+                
+                // --- 2. (NEW) 점수별 헤드라인 및 최종 권고안 생성 ---
+                const homeAddress = data['home-address'] || '이 동네';
+                const homeAddressEncoded = encodeURIComponent(homeAddress);
+                let headline = "";
+                let finalRecommendation = "";
+
+                if (score >= 80) { // 좋음
+                    headline = `"${data.transport === 'e-bicycle' ? '전기 자전거라는 날개를 단' : ''} ${data.name}님에게, ${homeAddress}은(는) 최고의 놀이터가 될 것입니다."`;
+                    finalRecommendation = `
+                        <p class="text-lg font-semibold text-gray-800 leading-relaxed">
+                            이 동네는 ${data.name}님의 라이프스타일을 위한 최적의 무대입니다.
+                            <br><br>
+                            <span class="text-blue-600 font-bold">계약 확정 전, 실제 동네 분위기를 느껴보기 위한 주말 동네 한바퀴를 권장합니다!</span>
+                        </p>`;
+                } else if (score >= 50) { // 보통
+                    headline = `"${data.name}님과 잘 맞지만, 몇 가지 아쉬운 점이 보입니다."`;
+                    finalRecommendation = `
+                        <p class="text-lg font-semibold text-gray-800 leading-relaxed">
+                            ${data.name}님과 전반적으로 잘 맞지만, 몇 가지 아쉬운 점이 보입니다.
+                            <br><br>
+                            <span class="text-yellow-600 font-bold">특히, ${commuteTime > 30 ? '출퇴근 시간이 다소 소요되는 점' : '중요하게 생각하는 인프라'}을 현장에서 꼭 확인해보세요.</span>
+                        </p>`;
+                } else { // 나쁨 (출퇴근 문제)
+                    headline = `"${data.name}님, 이 동네는 다시 생각해 보시는 게 어떨까요?"`;
+                    finalRecommendation = `
+                        <p class="text-lg font-semibold text-gray-800 leading-relaxed">
+                            솔직하게 말씀드리면, ${data.name}님의 라이프스타일과 궁합이 좋지 않습니다.
+                            <br><br>
+                            <span class="font-bold text-red-600">특히, 출퇴근으로 너무 힘듭니다. 다른 동네를 알아보시길 추천드립니다.</span>
+                            <br><br>
+                            <span class="text-sm text-gray-600">(11월 중순 오픈 예정인 '나에게 맞는 예산 세우기 가이드(꼭.맞.춤. 계산기)' + 슬기로운 동네생활을 이용해서 지역을 비교해보실 수 있어요! 커밍쑤운!)</span>
+                        </p>`;
+                }
+
+
+                // --- 3. 장점 (Pros) 동적 생성 ---
+                let prosList = `
+                    ${data.infra.includes('grocery') ? "<li>'이마트/트레이더스'가 있어 원스톱 쇼핑이 가능합니다.</li>" : ""}
+                    ${data.hobby.includes('music') ? `<li>${data.name}님의 '소울 플레이스'(코인노래방)가 근거리에 있습니다.</li>` : ""}
+                `;
+                if (data.transport === 'e-bicycle' && score >= 50) {
+                    prosList += '<li>전기 자전거가 동네 최대 약점인 \'언덕\'을 완벽히 상쇄합니다.</li>';
+                }
+                if (data.lifestyle.includes('work-cafe')) {
+                    prosList += '<li>집중하기 좋은 카공 스팟(스타벅스, 할리스)이 근처에 있습니다.</li>'; // (MODIFIED)
+                }
+                // (MOD) 연령대별 맛집 Pros 반영
+                if (data.hobby.includes('foodie')) {
+                    if (data['age-group'] === '10s' || data['age-group'] === '20s') {
+                        prosList += '<li>트렌디한 맛집(마라탕, 탕후루)이 근처에 있습니다.</li>';
+                    } else if (data['age-group'] === '40s' || data['age-group'] === '50s_plus') {
+                        prosList += '<li>기념일에 가기 좋은 스시 맛집(호시아카리)이 근처에 있습니다.</li>'; // (MODIFIED)
+                    } else { // 30s
+                        prosList += '<li>퇴근 후 즐기기 좋은 로컬 맛집(닭갈비, 족발)이 근처에 있습니다.</li>';
+                    }
+                }
+
+                // --- 4. 경사도 섹션 생성 ---
+                let slopeSection = '';
+                if (data.transport === 'bicycle' || data.transport === 'e-bicycle') {
+                    slopeSection = `
+                        <h4 class="mt-8">4. 동네 경사도 분석 (모의)</h4>
+                        <div class="mt-2 p-4 bg-gray-50 rounded-lg border">
+                            <p class="text-gray-800">
+                                <strong>[경사도]</strong> ${homeAddress} 일부 지역(영축산 근처)은 <span class="font-bold text-red-600">경사가 다소 있습니다.</span>
+                                ${data.transport === 'e-bicycle' ? '<br><span class="font-bold text-blue-600">전기 자전거</span> 이용 시 이 단점이 완벽히 상쇄됩니다.' : '<br><span class="font-bold text-red-600">일반 자전거</span> 이용 시 체력 소모가 클 수 있습니다.'}
+                            </p>
+                        </div>
+                    `;
+                }
+
+
+                // --- (MODIFIED) 5. Age-Based Content Logic ---
+                let foodieMission = "로컬 맛집 모임";
+                let foodiePlaceName = "춘천 닭갈비 막국수";
+                let foodiePlaceLink = "https://blog.naver.com/thebloon1819/223721444184";
+                
+                let cafeRec1 = { name: "스타벅스 광운대점", desc: "가장 안정적인 팀플/업무 공간", tags: "#팀플 #안정적 #콘센트" };
+                let cafeRec2 = { name: "카페, 공휴", desc: "조용하고 디저트가 맛있는 곳", tags: "#감성 #디저트 #조용함" };
+                let cafeRec3 = { name: "그래도제빵사", desc: "빵이 맛있는 동네 베이커리 카페", tags: "#빵맛집 #디저트 #동네카페" }; // (MODIFIED)
+                let cafeRec4 = { name: "더 착한 커피", desc: "압도적인 가성비, 빠른 테이크아웃", tags: "#가성비 #테이크아웃" };
+
+                if (data['age-group'] === '10s' || data['age-group'] === '20s') {
+                    foodieMission = "트렌디한 한 끼";
+                    foodiePlaceName = "라쿵푸마라탕 석계역점";
+                    foodiePlaceLink = "https://map.naver.com/p/search/라쿵푸마라탕%20석계역점";
+                    
+                    cafeRec1 = { name: "할리스 광운대역점", desc: "시험기간 공부하기 좋은 곳", tags: "#카공 #팀플 #콘센트" }; // (MODIFIED)
+                    cafeRec2 = { name: "더 착한 커피", desc: "압도적인 가성비, 빠른 테이크아웃", tags: "#가성비 #테이크아웃" };
+                    cafeRec3 = { name: "카페, 공휴", desc: "감성있는 디저트 카페", tags: "#감성 #디저트 #사진" };
+                    cafeRec4 = { name: "스타벅스 광운대점", desc: "친구들과 모여서 팀플하기 좋음", tags: "#팀플 #안정적 #콘센트" };
+
+                } else if (data['age-group'] === '40s' || data['age-group'] === '50s_plus') {
+                    foodieMission = "기념일/특별한 식사"; // (MODIFIED)
+                    foodiePlaceName = "호시아카리 (스시)"; // (MODIFIED)
+                    foodiePlaceLink = "https://blog.naver.com/dnskdud88/223677069874"; // (MODIFIED)
+                    
+                    cafeRec1 = { name: "스타벅스 광운대점", desc: "안정적이고 편안한 좌석", tags: "#안정적 #편안함 #대화" };
+                    cafeRec2 = { name: "카페, 공휴", desc: "조용하고 차분한 분위기", tags: "#감성 #조용함 #대화" }; // (MODIFIED)
+                    cafeRec3 = { name: "스타벅스 석계역점", desc: "넓고 쾌적한 공간", tags: "#넓은좌석 #편안함 #접근성" }; // (MODIFIED)
+                    cafeRec4 = { name: "이디야커피 광운대역점", desc: "가성비 좋고 간단한 대화", tags: "#가성비 #간단한대화" }; // (MODIFIED)
+                }
+
+
+                // --- 6. HTML 템플릿 반환 ---
+                return `
+                    <div class="text-center mb-6">
+                        <!-- (MOD) 동적 점수 -->
+                        <div class="text-7xl font-bold ${score < 50 ? 'text-red-600' : 'text-blue-600'}">${score}<span class="text-4xl text-gray-500">/100</span></div>
+                        <p class="text-lg font-semibold text-gray-700 mt-2">최종 궁합 점수</p>
+                    </div>
+
+                    <!-- (MOD) 동적 헤드라인 -->
+                    <div class="text-center ${score < 50 ? 'bg-red-50' : 'bg-blue-50'} p-6 rounded-lg mb-8">
+                        <p class="text-xl font-semibold ${score < 50 ? 'text-red-800' : 'text-blue-800'}">${headline}</p>
+                    </div>
+
+                    <div class="report-section">
+                        <h3>종합 분석: ${data.name}님과의 궁합</h3>
+                        <div class="pros-cons">
+                            <div>
+                                <h5 class="text-green-600">장점 (Pros)</h5>
+                                <ul class="space-y-2">${prosList}</ul>
+                            </div>
+                            <div>
+                                <h5 class="text-red-600">고려사항 (Points to Consider)</h5>
+                                <ul class="space-y-2">
+                                    <li>대학가 특유의 변동성: 시험 기간에는 카페가 만석일 수 있습니다.</li>
+                                    <li>방학 시즌에는 일부 상점이 휴무이거나 단축 운영할 수 있습니다.</li>
+                                    ${commuteTime > 40 ? '<li>출퇴근 소요 시간이 다소 깁니다.</li>' : ''}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-section">
+                        <h3>${data.name}님 맞춤형 '출퇴근 및 치안'</h3>
+                        
+                        <!-- (MOD) 치안 데이터 로직 변경 (높을수록 안전) -->
+                        <h4>1. 동네 치안 데이터 (5대 범죄 발생률)</h4>
+                        <p class="text-sm text-gray-500 mb-4">(모의 데이터) 수치가 높을수록 안전합니다. (서울시 평균=80)</p>
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-sm font-semibold text-gray-700">${homeAddress} (모의: 92점)</span>
+                                <div class="chart-bar-container"><div class="chart-bar bg-blue-500" style="width: 92%;">92</div></div>
+                            </div>
+                            <div>
+                                <span class="text-sm font-semibold text-gray-700">노원구 평균 (모의: 85점)</span>
+                                <div class="chart-bar-container"><div class="chart-bar bg-gray-400" style="width: 85%;">85</div></div>
+                            </div>
+                            <div>
+                                <span class="text-sm font-semibold text-gray-700">서울시 평균 (모의: 80점)</span>
+                                <div class="chart-bar-container"><div class="chart-bar bg-gray-300" style="width: 80%;">80</div></div>
+                            </div>
+                        </div>
+
+                        <h4 class="mt-8">2. 야간 안심 귀갓길 시뮬레이션 (모의)</h4>
+                        <p class="text-gray-700">광운대역 1번 출구 &rarr; 집 (${homeAddress})</p>
+                        <div class="mt-2 p-4 bg-gray-50 rounded-lg border">
+                            <p class="text-gray-800">
+                                <strong>[추천 경로]</strong> 지도 앱의 지름길(골목)보다 <span class="font-bold text-blue-600">'광운로' 큰길</span> 이용을 강력히 권고합니다.
+                            </p>
+                        </div>
+                        
+                        <!-- (MOD) 동적 출퇴근 시뮬레이션 -->
+                        <h4 class="mt-8">3. 출퇴근 시뮬레이션 (모의)</h4>
+                        <p class="text-gray-700"><strong>${homeAddress}</strong>(에서) &rarr; <strong>${data['work-address']}</strong>(으)로 <strong>(${transportMode} 이용 시)</strong>:</p>
+                        <ul class="space-y-2 mt-2 text-gray-800">
+                            <li><strong>예상 소요 시간:</strong> 약 ${commuteTime}분</li>
+                            <li><strong>예상 교통비 (20일 왕복):</strong> 약 ${commuteCost.toLocaleString('ko-KR')}원</li>
+                            <li><strong>추천 루트:</strong> ${commuteRoute}</li>
+                        </ul>
+                        
+                        ${slopeSection} <!-- (NEW) 경사도 섹션 주입 -->
+
+                    </div>
+
+                    <div class="report-section">
+                        <h3>${data.name}님 맞춤형 '동네 생활 플랜'</h3>
+                        
+                        <!-- (MOD) 연령대별 미식 로드맵 -->
+                        <h4>1. 주간 '미식 로드맵' 제안 (모의)</h4>
+                        <table class="w-full text-left border-collapse border border-gray-300">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-3 border border-gray-300">미션</th>
+                                    <th class="p-3 border border-gray-300">추천 장소 (링크)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.lifestyle.includes('work-cafe') ? `
+                                <tr>
+                                    <td class="p-3 border border-gray-300">카공/업무</td>
+                                    <td class="p-3 border border-gray-300"><a href="https://map.naver.com/p/search/할리스%20광운대역점" target="_blank" class="text-blue-600 hover:underline">할리스 광운대역점</a></td>
+                                </tr>` : ''} <!-- (MODIFIED) -->
+                                ${data.hobby.includes('foodie') ? `
+                                <tr>
+                                    <td class="p-3 border border-gray-300">${foodieMission}</td>
+                                    <td class="p-3 border border-gray-300"><a href="${foodiePlaceLink}" target="_blank" class="text-blue-600 hover:underline">${foodiePlaceName}</a></td>
+                                </tr>` : ''}
+                                ${data.hobby.includes('walk') ? `
+                                <tr>
+                                    <td class="p-3 border border-gray-300">산책</td>
+                                    <td class="p-3 border border-gray-300"><a href="https://map.naver.com/p/search/영축산" target="_blank" class="text-blue-600 hover:underline">영축산 근린공원</a></td>
+                                </tr>` : ''}
+                                ${data.infra.includes('gym') ? `
+                                <tr>
+                                    <td class="p-3 border border-gray-300">운동</td>
+                                    <td class="p-3 border border-gray-300"><a href="https://map.naver.com/p/search/파크짐%20광운대점" target="_blank" class="text-blue-600 hover:underline">파크짐 광운대점 (헬스)</a></td>
+                                </tr>` : ''}
+                                ${data.hobby.includes('shopping') ? `
+                                <tr>
+                                    <td class="p-3 border border-gray-300">쇼핑/장보기</td>
+                                    <td class="p-3 border border-gray-300"><a href="https://map.naver.com/p/search/이마트%20월계점" target="_blank" class="text-blue-600 hover:underline">이마트 월계점 / 트레이더스</a></td>
+                                </tr>` : ''}
+                            </tbody>
+                        </table>
+
+                        <!-- (MOD) 연령대별 카페 추천 -->
+                        <h4 class="mt-8">2. 상황별 카페 추천 (모의)</h4>
+                        <div class="cafe-grid">
+                            <div class="cafe-card">
+                                <h5>${cafeRec1.name}</h5>
+                                <p>${cafeRec1.desc}</p>
+                                <span class="tags">${cafeRec1.tags}</span>
+                            </div>
+                            <div class="cafe-card">
+                                <h5>${cafeRec2.name}</h5>
+                                <p>${cafeRec2.desc}</p>
+                                <span class="tags">${cafeRec2.tags}</span>
+                            </div>
+                            <div class="cafe-card">
+                                <h5>${cafeRec3.name}</h5>
+                                <p>${cafeRec3.desc}</p>
+                                <span class="tags">${cafeRec3.tags}</span>
+                            </div>
+                            <div class="cafe-card">
+                                <h5>${cafeRec4.name}</h5>
+                                <p>${cafeRec4.desc}</p>
+                                <span class="tags">${cafeRec4.tags}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-section">
+                        <h3>실생활 인프라 및 비용 분석</h3>
+                        
+                        <!-- (MOD) 주요 관공서 (Google Maps 링크 추가) -->
+                        <h4>1. 주요 관공서 및 편의시설 (집 기준, 모의)</h4>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                            <a href="https://www.google.com/maps/search/?api=1&query=${homeAddressEncoded}+주민센터" target="_blank" rel="noopener noreferrer" class="bg-gray-100 p-4 rounded-lg hover:bg-gray-200 transition-colors">
+                                <div class="text-lg font-semibold">주민센터</div>
+                                <div class="text-blue-600 font-bold">도보 10분</div>
+                            </a>
+                            <a href="https://www.google.com/maps/search/?api=1&query=${homeAddressEncoded}+우체국" target="_blank" rel="noopener noreferrer" class="bg-gray-100 p-4 rounded-lg hover:bg-gray-200 transition-colors">
+                                <div class="text-lg font-semibold">우체국</div>
+                                <div class="text-blue-600 font-bold">도보 5분</div>
+                            </a>
+                            <a href="https://www.google.com/maps/search/?api=1&query=${homeAddressEncoded}+은행" target="_blank" rel="noopener noreferrer" class="bg-gray-100 p-4 rounded-lg hover:bg-gray-200 transition-colors">
+                                <div class="text-lg font-semibold">주요 은행</div>
+                                <div class="text-blue-600 font-bold">역 근처 밀집</div>
+                            </a>
+                             <!-- (MOD) 24시 약국 링크 수정 -->
+                             <a href="https://soqjswo.tistory.com/560" target="_blank" rel="noopener noreferrer" class="bg-gray-100 p-4 rounded-lg hover:bg-gray-200 transition-colors">
+                                <div class="text-lg font-semibold">24시 약국</div>
+                                <div class="text-blue-600 font-bold">정보 확인</div>
+                            </a>
+                        </div>
+                        
+                        <!-- (MOD) 광운대 fit "장보기" 섹션 -->
+                        <h4 class="mt-8">2. 장보기 (모의)</h4>
+                        <ul class="info-list">
+                            <li><strong>이마트 월계점:</strong> 트레이더스 동시 이용 가능, 대용량 장보기에 최적.</li>
+                            <li><strong>롯데마트 석계점:</strong> 역과 가까워 접근성이 좋음, 1인 가구 장보기 편리.</li>
+                        </ul>
+
+                        <!-- (MOD) 광운대 fit "헬스 & 웰니스" 섹션 -->
+                        <h4 class="mt-8">3. 헬스 & 웰니스 (모의)</h4>
+                        <ul class="info-list">
+                            <li><strong>새마을휘트니스 석계점:</strong> 24시간 운영, 다양한 G.X 프로그램.</li>
+                            <li><strong>파크짐 광운대점:</strong> 최근 오픈, 기구 컨디션 좋음 (3개월 약 12~15만원)</li>
+                        </ul>
+
+                        <!-- (MOD) 예상 월별 생활비 (안내 문구 추가) -->
+                        <h4 class="mt-8">4. 예상 월별 생활비 (모의)</h4>
+                        <ul class="space-y-2">
+                            <li><strong>주거비 (월세/전세 대출 이자):</strong> (사용자 입력 필요)</li>
+                            <li><strong>관리비 (공과금 포함):</strong> 약 100,000원 ~ 150,000원</li>
+                            <li><strong>교통비 (모의):</strong> 약 ${commuteCost.toLocaleString('ko-KR')}원 (${transportMode} 기준)</li>
+                            <li><strong>식비 및 기타:</strong> ...</li>
+                        </ul>
+                        <div class="mt-4 p-3 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium">
+                            <strong>Tip:</strong> 11월 중순 오픈 예정인 <span class="font-bold">[꼭.맞.춤. 계산기]</span>를 통해 더 정확한 예산을 잡아보세요!
+                        </div>
+                    </div>
+                    
+                    <!-- (MOD) 동적 "최종 권고" 섹션 -->
+                    <div class="report-section">
+                        <h3>보증금지키미 최종 권고</h3>
+                        <div class="${score < 50 ? 'bg-red-50 border-red-200' : (score < 80 ? 'bg-yellow-50 border-yellow-200' : 'bg-gray-100 border-gray-200')} p-6 rounded-lg border">
+                            ${finalRecommendation}
+                        </div>
+                    </div>
+                `;
+            }
+
+
+            // --- (NEW) Modal Logic ---
+            const termsModal = document.getElementById('terms-modal');
+            const privacyModal = document.getElementById('privacy-modal');
+            const termsBtn = document.getElementById('terms-modal-btn');
+            const privacyBtn = document.getElementById('privacy-modal-btn');
+            const closeBtns = document.querySelectorAll('.close-modal-btn');
+
+            function openModal(modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.style.overflow = 'hidden'; // 스크롤 방지
+            }
+
+            function closeModal(modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = 'auto'; // 스크롤 복구
+            }
+
+            termsBtn.addEventListener('click', () => openModal(termsModal));
+            privacyBtn.addEventListener('click', () => openModal(privacyModal));
+
+            closeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    closeModal(termsModal);
+                    closeModal(privacyModal);
+                });
+            });
+
+            // Close modal when clicking on the background overlay
+            window.addEventListener('click', (e) => {
+                if (e.target === termsModal) {
+                    closeModal(termsModal);
+                }
+                if (e.target === privacyModal) {
+                    closeModal(privacyModal);
+                }
+            });
+            // --- (END) Modal Logic ---
+
+
+            // --- 초기화 ---
+            showStep(currentStep);
+        });
+    </script>
+</body>
+</html>
+
+
+
+
